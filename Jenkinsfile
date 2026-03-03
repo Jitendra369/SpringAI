@@ -29,7 +29,9 @@ pipeline{
 
         stage('Deploy Container') {
             steps {
-                bat 'docker compose down || exit 0'
+//                bat 'docker compose down || exit 0'
+                // it remove the old running container if present and then start the new one with the updated image
+                bat 'docker rm -f ai-service || exit 0'
                 bat 'docker compose up -d --build'
             }
 
