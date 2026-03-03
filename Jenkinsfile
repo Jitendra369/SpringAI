@@ -3,6 +3,7 @@ pipeline{
 
     tools {
     maven 'Maven'
+    jdk 'java_17'
 }
 
     stages{
@@ -14,6 +15,7 @@ pipeline{
 
         stage('Build Maven') {
             steps {
+               bat 'java -version'
                bat 'mvn clean package'
             }
         }
