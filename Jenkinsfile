@@ -22,7 +22,7 @@ pipeline{
 
         stage('Build Docker Image') {
             steps {
-                bat 'doccker build -t aiservice:1.0 .'
+                bat 'docker build -t aiservice:1.0 .'
             }
 
         }
