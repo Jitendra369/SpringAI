@@ -1,7 +1,9 @@
 
 services:
-  aiService:
-    build: .
+  aiservice:
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: ai-service
     ports:
       - "8859:8859"
