@@ -1,0 +1,10 @@
+
+services:
+  aiService:
+    build: .
+    container_name: ai-service
+    ports:
+      - "8859:8859"
+    restart: always
+#    environment:
+#      - OPENAI_API_KEY=${OPENAI_API_KEY}
