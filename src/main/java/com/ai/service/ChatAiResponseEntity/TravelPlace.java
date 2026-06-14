@@ -1,4 +1,4 @@
-package com.ai.service.entity;
+package com.ai.service.ChatAiResponseEntity;
 
 import lombok.Data;
 

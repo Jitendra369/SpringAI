@@ -1,24 +1,38 @@
 package com.ai.service.service;
 
+import com.ai.service.ChatAiResponseEntity.TravelPlace;
+import com.ai.service.ChatAiResponseEntity.UserDetails;
 import com.ai.service.dto.ChatDto;
-import com.ai.service.entity.TravelPlace;
-import com.ai.service.entity.UserDetails;
+import com.ai.service.entity.AIResponse;
+import com.ai.service.repo.AIResponseRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.openai.OpenAiChatOptions;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@Slf4j
+@RequiredArgsConstructor
 public class ChatServiceImpl implements ChatService{
+    private final AIResponseRepository aIResponseRepository;
 
-    private ChatClient chatClient;
+    private final ChatClient chatClient;
+    private final AIResponseService aiResponseService;
 
-    public ChatServiceImpl(ChatClient.Builder chatClient){
-        this.chatClient = chatClient.build();
-    }
+    @Value("classpath:/prompts/user-message.st")
+    private Resource userMessage;
+
+//    public ChatServiceImpl(ChatClient.Builder chatClient){
+//        this.chatClient = chatClient.build();
+//    }
 
     @Override
     public String chat(String query) {
@@ -33,7 +47,6 @@ public class ChatServiceImpl implements ChatService{
                 .getResult()
                 .getOutput()
                 .getText();
-
         return content;
     }
 
@@ -68,6 +81,7 @@ public class ChatServiceImpl implements ChatService{
                 .maxTokens(100)
                 .build());
 
+
         return null;
     }
 
@@ -83,5 +97,48 @@ public class ChatServiceImpl implements ChatService{
                 .content();
 
         return result;
+    }
+
+    @Override
+    public String getResponseUsePromptTemplate(String topic) {
+        Prompt prompt = new Prompt(topic);
+        String query = "As an expert in coding and programming . Always write a program in java . now reply for this question {query}";
+
+        ChatResponse chatResponse = chatClient
+                .prompt()
+                .user(u -> u.text(query).param("query", topic))
+                .call()
+                .chatResponse();
+
+        if (chatResponse != null){
+            logChatResponse(chatResponse, topic);
+        }else{
+            log.info("No response From LLM ");
+        }
+        return chatResponse.getResult().getOutput().getText();
+    }
+
+
+
+    @Override
+    public String getResultFormResourceFile() {
+        return "";
+    }
+
+    @Override
+    public List<AIResponse> viewAllResponse() {
+        return aIResponseRepository.findAll();
+    }
+
+    private void logChatResponse(ChatResponse chatResponse, String userInput ) {
+        AIResponse aiResponse = AIResponse.builder()
+                .outputTokenUsed(chatResponse.getMetadata().getUsage().getCompletionTokens())
+                .inputTokenUsed(chatResponse.getMetadata().getUsage().getPromptTokens())
+                .questionAsked(userInput)
+                .totalTokenUsed(chatResponse.getMetadata().getUsage().getTotalTokens())
+                .chatResponse(chatResponse.getResult().getOutput().getText())
+                .build();
+
+        aiResponseService.saveAiResponse(aiResponse);
     }
 }

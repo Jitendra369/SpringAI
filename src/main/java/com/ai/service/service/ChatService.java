@@ -1,8 +1,9 @@
 package com.ai.service.service;
 
 import com.ai.service.dto.ChatDto;
-import com.ai.service.entity.TravelPlace;
-import com.ai.service.entity.UserDetails;
+import com.ai.service.ChatAiResponseEntity.TravelPlace;
+import com.ai.service.ChatAiResponseEntity.UserDetails;
+import com.ai.service.entity.AIResponse;
 
 import java.util.List;
 
@@ -12,5 +13,9 @@ public interface ChatService {
     List<TravelPlace> getListOfPlacesToVisit(String place);
     UserDetails getUserDetailsManageVariable(String personName);
     String getResponseUsingPromptTemplate(ChatDto chatDto);
+    String getResponseUsePromptTemplate(String topic);
+    String getResultFormResourceFile();
+    List<AIResponse> viewAllResponse();
+
 
 }

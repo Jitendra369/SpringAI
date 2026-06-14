@@ -1,17 +1,13 @@
 package com.ai.service.controller;
 
 import com.ai.service.dto.ChatDto;
-import com.ai.service.entity.TravelPlace;
-import com.ai.service.entity.UserDetails;
+import com.ai.service.ChatAiResponseEntity.TravelPlace;
+import com.ai.service.ChatAiResponseEntity.UserDetails;
+import com.ai.service.entity.AIResponse;
 import com.ai.service.service.ChatService;
-import lombok.RequiredArgsConstructor;
-import org.apache.catalina.User;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -47,7 +43,18 @@ public class OpenAiChatController {
 
     @PostMapping("/chat/prompt")
     public ResponseEntity<String> getResultUsingCustomPrompt(@RequestBody ChatDto chatDto) {
-        String result  = chatService.getResponseUsingPromptTemplate(chatDto);
+        String result = chatService.getResponseUsingPromptTemplate(chatDto);
         return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("/chat/prompt/{topic}")
+    public ResponseEntity<String> getResultUsingCustomPrompt(@PathVariable String topic) {
+        String result = chatService.getResponseUsePromptTemplate(topic);
+        return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("/chat/viewAllResponse")
+    public List<AIResponse> viewAllGeneratedResponse() {
+        return chatService.viewAllResponse();
     }
 }
