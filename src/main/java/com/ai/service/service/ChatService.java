@@ -12,7 +12,7 @@ public interface ChatService {
     UserDetails getUserDetails(String personName);
     List<TravelPlace> getListOfPlacesToVisit(String place);
     UserDetails getUserDetailsManageVariable(String personName);
-    String getResponseUsingPromptTemplate(ChatDto chatDto);
+    String getResponseUsingPromptTemplate(ChatDto chatDto, String userId );
     String getResponseUsePromptTemplate(String topic);
     String getResultFormResourceFile();
     List<AIResponse> viewAllResponse();

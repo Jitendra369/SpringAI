@@ -42,8 +42,8 @@ public class OpenAiChatController {
     }
 
     @PostMapping("/chat/prompt")
-    public ResponseEntity<String> getResultUsingCustomPrompt(@RequestBody ChatDto chatDto) {
-        String result = chatService.getResponseUsingPromptTemplate(chatDto);
+    public ResponseEntity<String> getResultUsingCustomPrompt(@RequestBody ChatDto chatDto, @RequestHeader("userId") String userId ) {
+        String result = chatService.getResponseUsingPromptTemplate(chatDto, userId);
         return ResponseEntity.ok(result);
     }
 

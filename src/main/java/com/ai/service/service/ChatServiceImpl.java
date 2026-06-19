@@ -8,6 +8,7 @@ import com.ai.service.repo.AIResponseRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.openai.OpenAiChatOptions;
@@ -86,12 +87,13 @@ public class ChatServiceImpl implements ChatService{
     }
 
     @Override
-    public String getResponseUsingPromptTemplate(ChatDto chatDto) {
+    public String getResponseUsingPromptTemplate(ChatDto chatDto, String userId ) {
         Prompt prompt = new Prompt(chatDto.getQuery());
         String query = "As an expert in coding and programming . Always write a program in java . now reply for this question {query}";
 
         String result = chatClient
                 .prompt()
+                .advisors(advisorSpec -> advisorSpec.param(ChatMemory.CONVERSATION_ID, userId))
                 .user(u -> u.text(query).param("query", chatDto.getQuery()))
                 .call()
                 .content();
